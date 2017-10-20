@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="app/assets/stylesheets/events.css.sass">
+    <title>Events</title>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <h3>Welcome <%= @user.first_name %>  <%= @user.last_name %>!</h3>
+      <%= link_to "Log Out", "/logout", data: { method: :delete}%>
+      </p>
+    </div>
+<!-- Table contaning a variety of Organizations -->
+    <div class="container">
+      <h4>Here are some of the organizations you may join:</h4>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Organization name</th>
+            <th># of members</th>
+            <th>Description</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @groups.each do |group| %>
+          <tr>
+            <td><a href='/groups/<%= group.id %>'><%= group.name%></td>
+            <td>---</td>
+            <td><%= group.desc%></td>
+            <% if group.user == @current_user %>
+            <td><%= link_to "Remove", group, data: { method: :delete, confirm: "Are you sure?" }%></td>
+            <% end %>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+<!-- Form to create a Group -->
+    <div class="container">
+      <h4>Create a new organization</h4>
+      <form action="/groups" method="post">
+        <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token%>">
+        <div class="form-group">
+          <label for="name">Org Name</label>
+          <input type="text" name="group[name]" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="date">Description</label>
+          <textarea name="group[desc]" rows="8" cols="80"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Add »</button>
+      </form>
+      <div id="error-container" class="container-fluid">
+        <% if flash[:errors] %>
+          <% flash[:errors].each do |e| %>
+            <ul>
+              <li class='event-errors'>
+                <%= e %>
+              </li>
+            </ul>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </body>
+</html>
